@@ -7,7 +7,7 @@ def stratified_sampling(data, ratio):
     Parameters:
     ----------
     data: 2-D array-like
-        e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
+        e.g. array([[feature1, feature2, ..., featureN, label], ...]).
     ratio: int or float, optional
         the ratio of data trained over all data.
 
@@ -39,7 +39,7 @@ def hold_out(model, data, ratio=0.8):
     model: object
         parameter model must have the methods: train, predict, etc.
     data: 2-D array-like
-        e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
+        e.g. array([[feature1, feature2, ..., featureN, label], ...]).
     ratio: int or float, optional
         the ratio of data trained over all data, default: 0.8.
 
@@ -67,7 +67,7 @@ def k_fold_cross_validate(model, data, k=5):
     model: object
         parameter model must have the methods: train, predict, etc.
     data: 2-D array-like
-        e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
+        e.g. array([[feature1, feature2, ..., featureN, label], ...]).
     k: int, optional
         here we use k fold cross validation method, default: 5.
 
@@ -106,7 +106,7 @@ def bootstrapping(model, data, n_samples):
     model: object
         parameter model must have the methods: train, predict, etc.
     data: 2-D array-like
-        e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
+        e.g. array([[feature1, feature2, ..., featureN, label], ...]).
     n_samples: int
         the times to sample from the data with replacement.
 
