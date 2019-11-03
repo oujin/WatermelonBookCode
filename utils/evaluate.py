@@ -6,7 +6,7 @@ def stratified_sampling(data, ratio):
     """
     Parameters:
     ----------
-    data: 2-D array-like 
+    data: 2-D array-like
         e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
     ratio: int or float, optional
         the ratio of data trained over all data.
@@ -25,8 +25,10 @@ def stratified_sampling(data, ratio):
         indices = np.arange(len(data_with_label))
         train_indices = rdm.choice(indices, n_samples, replace=False)
         validate_indices = np.setdiff1d(indices, train_indices)
-        train_samples = np.vstack(train_samples, data_with_label[train_indices])
-        validate_samples = np.vstack(validate_samples, data_with_label[validate_indices])
+        train_samples = np.vstack(
+            train_samples, data_with_label[train_indices])
+        validate_samples = np.vstack(
+            validate_samples, data_with_label[validate_indices])
     return (train_samples, validate_samples)
 
 
@@ -36,7 +38,7 @@ def hold_out(model, data, ratio=0.8):
     ----------
     model: object
         parameter model must have the methods: train, predict, etc.
-    data: 2-D array-like 
+    data: 2-D array-like
         e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
     ratio: int or float, optional
         the ratio of data trained over all data, default: 0.8.
@@ -53,7 +55,8 @@ def hold_out(model, data, ratio=0.8):
     train_samples, validate_samples = stratified_sampling(data, ratio)
     model.train(train_samples[:, :-1], train_samples[:, -1])
     pred = model.predict(validate_samples[:, :-1])
-    acc = np.sum(np.abs(pred == validate_samples[:, -1])) / validate_samples.shape[0]
+    acc = np.sum(
+        np.abs(pred == validate_samples[:, -1])) / validate_samples.shape[0]
     return acc
 
 
@@ -63,7 +66,7 @@ def k_fold_cross_validate(model, data, k=5):
     ----------
     model: object
         parameter model must have the methods: train, predict, etc.
-    data: 2-D array-like 
+    data: 2-D array-like
         e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
     k: int, optional
         here we use k fold cross validation method, default: 5.
@@ -83,13 +86,15 @@ def k_fold_cross_validate(model, data, k=5):
     datasets.append(remained)
     # train and validate
     accs = []
-    for i in range(len(datasets)):        
+    for i in range(len(datasets)):
         train_samples = np.vstack(datasets[:i] + datasets[i+1:])
         validate_samples = datasets[i]
         model.train(train_samples[:, :-1], train_samples[:, -1])
         pred = model.predict(validate_samples[:, :-1])
         accs.append(
-            np.sum(np.abs(pred == validate_samples[:, -1])) / validate_samples.shape[0]
+            np.sum(
+                np.abs(pred == validate_samples[:, -1])) /
+            validate_samples.shape[0]
         )
     return np.mean(accs)
 
@@ -100,7 +105,7 @@ def bootstrapping(model, data, n_samples):
     ----------
     model: object
         parameter model must have the methods: train, predict, etc.
-    data: 2-D array-like 
+    data: 2-D array-like
         e.g. numpy([[feature1, feature2, ..., featureN, label], ...]).
     n_samples: int
         the times to sample from the data with replacement.
@@ -119,5 +124,6 @@ def bootstrapping(model, data, n_samples):
     validate_samples = data[validate_indices]
     model.train(train_samples[:, :-1], train_samples[:, -1])
     pred = model.predict(validate_samples[:, :-1])
-    acc = np.sum(np.abs(pred == validate_samples[:, -1])) / validate_samples.shape[0]
+    acc = np.sum(
+        np.abs(pred == validate_samples[:, -1])) / validate_samples.shape[0]
     return acc
