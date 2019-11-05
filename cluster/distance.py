@@ -15,7 +15,7 @@ def euclidean_distance(x, y):
         the euclidean distance from each one in x to y,
         e.g. array([d1,...,dn])
     """
-    return np.sqrt(np.sum((x - y) ** 2, 1))
+    return np.sqrt(np.sum((x - y) ** 2, -1))
 
 
 if __name__ == "__main__":
