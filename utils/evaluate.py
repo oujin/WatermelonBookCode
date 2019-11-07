@@ -49,9 +49,9 @@ def hold_out(model, data, ratio=0.8):
         the accuracy of the model ran.
     """
     if not isinstance(ratio, int) and not isinstance(ratio, float):
-        raise('Parameter ratio should be in the type of float or integer.')
+        raise Exception('Parameter ratio should be float or int type.')
     if data.shape[0] == 0 or data.shape[1] == 0:
-        raise('Gotten no data.')
+        raise Exception('Gotten no data.')
     train_samples, validate_samples = stratified_sampling(data, ratio)
     model.train(train_samples[:, :-1], train_samples[:, -1])
     pred = model.predict(validate_samples[:, :-1])

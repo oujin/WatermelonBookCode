@@ -35,7 +35,7 @@ def minkowski_distance(x, y, p=2):
         e.g. array([d1,...,dn])
     """
     if p < 1:
-        raise("p is too less than 1!")
+        raise Exception("p is too less than 1!")
     if p < np.inf:
         return (np.sum((x - y) ** p, -1)) ** (1/p)
     return np.max(np.abs((x - y)), -1)
