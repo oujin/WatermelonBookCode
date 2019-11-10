@@ -1,5 +1,7 @@
 import numpy as np
 
+from distance import euclidean_distance
+
 
 class Estimater(object):
     """
@@ -44,7 +46,7 @@ class Estimater(object):
         print("{:20s}|{:25s}|{:10s}".format("-" * 20, "-" * 25, "-" * 10))
         print("{:20.6f}|{:25.6f}|{:10.6f}".format(jc, fmi, ri))
 
-    def _get_avg_and_diam(self, cluster, dist_func):
+    def _get_avg_and_diam(self, cluster, dist_func=euclidean_distance):
         """
         Parameters:
         ----------
@@ -65,11 +67,11 @@ class Estimater(object):
         for i in range(cluster.shape[0]):
             for j in range(i+1, cluster.shape[0]):
                 dists.append(dist_func(cluster[i, :-1], cluster[j, :-1]))
-        avg = np.mean(dists)
-        diam = np.max(dists)
+        avg = np.mean(dists) if len(dists) else 0
+        diam = np.max(dists) if len(dists) else 0
         return avg, diam
 
-    def _get_dmin(self, cluster1, cluster2, dist_func):
+    def _get_dmin(self, cluster1, cluster2, dist_func=euclidean_distance):
         """
         Parameters:
         ----------
@@ -94,7 +96,7 @@ class Estimater(object):
         dmin = np.min(dists)
         return dmin
 
-    def get_internal_index(self, data, dist_func):
+    def get_internal_index(self, data, dist_func=euclidean_distance):
         """
         Parameters:
         ----------
@@ -106,18 +108,19 @@ class Estimater(object):
         Returns:
         ----------
         """
-        num_clusters = np.unique(data[:, -1]).shape[0]
+        tags = np.unique(data[:, -1])
+        num_clusters = tags.shape[0]
         # centers: the centers of cluster
         # avgs: the mean distance between points in the same cluster
         centers, avgs = [], []
         # diam: the max distance between points in the same cluster
         max_diam = 0
         for i in range(num_clusters):
-            avg, diam = self._get_avg_and_diam(data[data[:, -1] == i],
+            avg, diam = self._get_avg_and_diam(data[data[:, -1] == tags[i]],
                                                dist_func)
             max_diam = max(max_diam, diam)
             avgs.append(avg)
-            centers.append(np.mean(data[data[:, -1] == i, :-1], 0))
+            centers.append(np.mean(data[data[:, -1] == tags[i], :-1], 0))
 
         avgs_over_dcen = np.zeros((num_clusters, num_clusters))
         # dmin: the min distance between some two clusters
@@ -129,7 +132,9 @@ class Estimater(object):
                 avgs_over_dcen[j, i] = (avgs[i] + avgs[j]) / dcen
                 avgs_over_dcen[i, j] = avgs_over_dcen[j, i]
                 dmins[i, j] = dmins[j, i] = self._get_dmin(
-                    data[data[:, -1] == i], data[data[:, -1] == j], dist_func)
+                    data[data[:, -1] == tags[i]],
+                    data[data[:, -1] == tags[j]],
+                    dist_func)
 
         # Davies-Boudin Index
         dbi = np.mean(np.max(avgs_over_dcen, 0))

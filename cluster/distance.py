@@ -37,8 +37,8 @@ def minkowski_distance(x, y, p=2):
     if p < 1:
         raise Exception("p is too less than 1!")
     if p < np.inf:
-        return (np.sum((x - y) ** p, -1)) ** (1/p)
-    return np.max(np.abs((x - y)), -1)
+        return (np.sum(np.abs(x - y) ** p, -1)) ** (1/p)
+    return np.max(np.abs(x - y), -1)
 
 
 def manhattan_distance(x, y):
